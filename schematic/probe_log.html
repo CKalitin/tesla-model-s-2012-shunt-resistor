@@ -1,0 +1,410 @@
+<title>Shunt Probe Log</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one narrow bench-sheet column; each test is a row = two probe points + a meter-style entry field. */
+:root{
+  --bg:#eef1ee; --panel:#ffffff; --fg:#17201b; --muted:#5d6b63; --line:#d5ddd8;
+  --mask:#1f5a3c;          /* solder-mask green accent */
+  --lcd:#e4ead2; --lcd-fg:#24301c;
+  --ok:#1d7a3e; --warn:#a86400; --bad:#b3261e; --info:#2a5d8f;
+  --font-ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101512; --panel:#18201b; --fg:#e3ebe5; --muted:#93a39a; --line:#2a3530;
+  --mask:#5fbf8a; --lcd:#1f2a1c; --lcd-fg:#d8e8b8;
+  --ok:#5ccf86; --warn:#e3a33c; --bad:#ff7a70; --info:#7fb3e6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101512; --panel:#18201b; --fg:#e3ebe5; --muted:#93a39a; --line:#2a3530;
+  --mask:#5fbf8a; --lcd:#1f2a1c; --lcd-fg:#d8e8b8;
+  --ok:#5ccf86; --warn:#e3a33c; --bad:#ff7a70; --info:#7fb3e6; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.45}
+.wrap{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:20px 64px;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+h1{font-size:1.7rem;margin:0;letter-spacing:.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:0;max-width:65ch}
+.status{font-family:var(--font-num);font-size:.8rem;color:var(--muted)}
+.status.err{color:var(--bad)}
+
+.rules{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.rules ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.rules b{color:var(--mask)}
+.lead{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:4px}
+
+.progress{display:flex;flex-wrap:wrap;gap:8px}
+.pill{font-family:var(--font-num);font-size:.78rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.pill.done{border-color:var(--ok);color:var(--ok)}
+
+section{display:flex;flex-direction:column;gap:8px}
+section h2{font-size:.82rem;text-transform:uppercase;letter-spacing:.09em;color:var(--mask);margin:0;padding-bottom:4px;border-bottom:2px solid var(--mask)}
+section .why{color:var(--muted);font-size:.9rem;margin:0}
+
+.row{display:grid;grid-template-columns:3.2rem minmax(0,1fr) 15.5rem;gap:4px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.id{font-family:var(--font-num);font-weight:600;font-size:.95rem}
+.probes{min-width:0;display:flex;flex-direction:column;gap:2px}
+.pts{font-weight:600}
+.pts .arrow{color:var(--muted);font-weight:400;padding:0 .3em}
+.exp{font-size:.85rem;color:var(--muted)}
+.entry{display:flex;flex-direction:column;gap:4px}
+.inputs{display:flex;gap:6px}
+input.rd{font-family:var(--font-num);font-size:.95rem;width:100%;min-width:0;padding:6px 8px;border-radius:4px;border:1px solid var(--line);background:var(--lcd);color:var(--lcd-fg)}
+input.rd.sw{opacity:.85}
+input.rd:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--mask);outline-offset:1px}
+.quick{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+button.q{font-family:var(--font-num);font-size:.75rem;padding:2px 8px;border-radius:4px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+button.q:hover{border-color:var(--mask)}
+.verdict{font-family:var(--font-num);font-size:.75rem;margin-left:auto}
+.v-ok{color:var(--ok)} .v-open{color:var(--muted)} .v-r{color:var(--info)} .v-chip{color:var(--warn)} .v-odd{color:var(--bad)}
+.saved{font-size:.7rem;color:var(--muted);font-family:var(--font-num)}
+
+.free{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+textarea{width:100%;min-height:9rem;font-family:var(--font-num);font-size:.9rem;padding:8px;border-radius:4px;border:1px solid var(--line);background:var(--bg);color:var(--fg);resize:vertical}
+
+.sweep{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.sweep h3{margin:0;font-size:1rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.sweep h3 .anchor{font-family:var(--font-num);background:var(--lcd);color:var(--lcd-fg);padding:1px 7px;border-radius:4px}
+.sweep h3 .count{margin-left:auto;font-family:var(--font-num);font-size:.78rem;color:var(--muted);font-weight:400}
+.sweep .why{margin:0;color:var(--muted);font-size:.88rem}
+.group{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+.targets{display:flex;flex-wrap:wrap;gap:6px}
+.t{position:relative}
+.t input{position:absolute;opacity:0;pointer-events:none}
+.t label{display:inline-block;font-family:var(--font-num);font-size:.8rem;padding:4px 9px;border:1px solid var(--line);border-radius:4px;cursor:pointer;background:var(--bg);user-select:none}
+.t input:checked + label{background:var(--mask);border-color:var(--mask);color:var(--panel);font-weight:600}
+.t input:focus-visible + label{outline:2px solid var(--mask);outline-offset:1px}
+.sweep .note{font-family:var(--font-num);font-size:.85rem;width:100%;padding:6px 8px;border-radius:4px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.sweep .foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+details.r2{background:transparent}
+details.r2 > summary{cursor:pointer;font-weight:600;font-size:1rem;padding:6px 0;color:var(--mask)}
+.banner{border-left:3px solid var(--warn);padding:6px 10px;background:var(--panel);font-size:.92rem}
+@media (max-width:640px){
+  .row{grid-template-columns:2.6rem minmax(0,1fr)}
+  .entry{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Shunt Probe Log</h1>
+    <p class="sub">Everything saves as you go, and Claude reads it from here. Positions refer to <code>netlist_overlay.jpg</code>, with the connector at the top.</p>
+    <span class="status" id="status">Connecting to storage…</span>
+  </header>
+
+  <div class="rules">
+    <ul>
+      <li>Unpowered board, harness unplugged, ohms range.</li>
+      <li><b>Connected</b> = within about 1 Ω of your shorted-lead reading. Just press <b>0</b>.</li>
+      <li>Not ~0? <b>Swap red/black and fill the second box.</b> Equal both ways = a resistor; different = through a chip.</li>
+      <li>MΩ, or a number that keeps climbing = <b>open</b>.</li>
+      <li>Accepted formats: <code>0</code>, <code>0.4</code>, <code>820</code>, <code>7.4k</code>, <code>1.02M</code>, <code>open</code>.</li>
+    </ul>
+    <div class="lead">
+      <label for="lead">Probes shorted together read:</label>
+      <input class="rd" id="lead" style="width:7rem" placeholder="e.g. 0.8">
+      <span class="saved" id="lead-saved"></span>
+    </div>
+  </div>
+
+  <div id="round4"></div>
+  <section>
+    <h2>Round 6 · four quick sweeps</h2>
+    <p class="why">Beeper. Hold one probe on the anchor, touch each listed pin, and tap the ones that beep. About 30 seconds each.</p>
+  </section>
+  <div id="sweeps" style="display:flex;flex-direction:column;gap:14px"></div>
+
+  <details class="r2" id="r2">
+    <summary>Earlier rounds (done)</summary>
+    <div class="banner" id="r2left"></div>
+    <div class="progress" id="progress" style="margin-block:10px"></div>
+    <div id="sections"></div>
+  </details>
+
+  <div class="free">
+    <h2 style="margin:0;font-size:.82rem;text-transform:uppercase;letter-spacing:.09em;color:var(--mask)">Anything else</h2>
+    <p class="why" style="margin:0;color:var(--muted)">Extra readings, follow-up probes (e.g. "U3.2 ↔ C8 left: 0"), or observations. One per line.</p>
+    <textarea id="free" placeholder="U3.2 ↔ C8 left pad: 0&#10;R6 left pad looks like it goes into a via"></textarea>
+    <span class="saved" id="free-saved"></span>
+  </div>
+</div>
+
+<script>
+const ROUND5 = [
+ {key:"G", title:"Round 5 (done)", why:"Beeper for all except G11/G12, where you type the reading.", tests:[
+  ["G1","Connector PIN7","R5 top pad","0 if the MCU reads the overcurrent flag"],
+  ["G2","R6 right pad","R13 right pad","0 if they share a node"],
+  ["G3","R6 right pad","R12 right pad","0 or not"],
+  ["G4","R13 right pad","Connector PIN7","0 or not"],
+  ["G5","R6 right pad","Connector PIN7","0 or not"],
+  ["G6","C7 bottom pad","Shunt bolt","0"],
+  ["G7","C11 left pad","Shunt bolt","0"],
+  ["G8","R17 top pad","U2 pin 12","0"],
+  ["G9","R18 top pad","U2 pin 6","one of G9/G10 is 0"],
+  ["G10","R18 bottom pad","U2 pin 6",""],
+  ["G11","Connector PIN8","Shunt bolt","type the reading, both ways"],
+  ["G12","Connector PIN8","Connector VDD","type the reading, both ways"]]},
+];
+const ROUND4 = [
+ {key:"F", title:"Round 4 (done)", why:"Beeper is fine for all of these. \"0\" = it beeps.", tests:[
+  ["F1","R6 right pad","U3 pin 1","0 if R6 is the hysteresis resistor"],
+  ["F2","R13 right pad","U3 pin 7","0 if R13 is the hysteresis resistor"],
+  ["F3","R10 bottom pad","Shunt bolt","0 or not"],
+  ["F4","R10 bottom pad","Connector VDD","only if F3 didn't beep"],
+  ["F5","R9 top pad","Shunt bolt","0 or not"],
+  ["F6","R12 right pad","R5 bottom pad","0 if R12 reaches VDD through R5"],
+  ["F7","U2 pin 12","U2 pin 13","0 if IHM VDDD = VDDA"],
+  ["F8","U2 pin 12","Via V18","0 if V18 feeds the IHM"],
+  ["F9","C16 bottom pad","Shunt bolt","0"],
+  ["C1","Connector NSS","U1 pin 17","0"],
+  ["C2","Connector SCK","U1 pin 22","0"],
+  ["C3","Connector MISO","U1 pin 24","0"],
+  ["C4","Connector MOSI","U1 pin 23","0"]]},
+];
+const SECTIONS = [
+ {key:"A", title:"A · Comparator threshold dividers", why:"Replaces the vague \"R6/R7 junction\" test. If any of A1–A4 is not ~0, list which R6/R7/R12/R13/C8/C10 pad touches that U3 pin in \"Anything else\".", tests:[
+  ["A1","U3 pin 2","R6 right pad","0"],
+  ["A2","U3 pin 2","R7 left pad","0"],
+  ["A3","U3 pin 6","R12 left pad","0"],
+  ["A4","U3 pin 6","R13 right pad","0"],
+  ["A5","U3 pin 3","R8 top pad","0"],
+  ["A6","U3 pin 5","R11 bottom pad","0"],
+  ["A7","R7 right pad","Connector VDD","0"],
+  ["A8","R12 right pad","Connector VDD","0"],
+  ["A9","R6 left pad","Shunt bolt","0"],
+  ["A10","R13 left pad","Shunt bolt","0"],
+  ["A11","U3 pin 8","Connector VDD","0"],
+  ["A12","U3 pin 4","Shunt bolt","0"]]},
+ {key:"B", title:"B · MCU ↔ IHM link", why:"The IHM's serial clock, data and interrupt lines, plus their pull-ups.", tests:[
+  ["B1","U1 pin 27","U2 pin 9 (SCLK)","0"],
+  ["B2","U1 pin 28","U2 pin 10 (SDAT)","0"],
+  ["B3","U1 pin 29","U2 pin 11 (INTN)","0, or open if B4 is the one"],
+  ["B4","U1 pin 32","U2 pin 11 (INTN)","only needed if B3 is open"],
+  ["B5","R17 top pad","U2 pin 10","0 if R17 pulls up SDAT"],
+  ["B6","R18 top pad","U2 pin 11","0 if R18 pulls up INTN"],
+  ["B7","R17 bottom pad","Connector VDD","0"],
+  ["B8","R18 bottom pad","Connector VDD","0"]]},
+ {key:"C", title:"C · Connector ↔ MCU", why:"C1–C4 moved to round 4.", tests:[
+  ["C5","Connector PIN8","U1 pin 30","unknown"],
+  ["C6","Connector PIN8","U1 pin 31","unknown"],
+  ["C7","Connector PIN8","U1 pin 1","unknown"],
+  ["C8","Connector PIN8","U1 pin 26","unknown"],
+  ["C9a","Connector PIN7","R3 left pad","one of C9a–d is 0"],
+  ["C9b","Connector PIN7","R3 right pad",""],
+  ["C9c","Connector PIN7","R4 left pad",""],
+  ["C9d","Connector PIN7","R4 right pad",""]]},
+ {key:"D", title:"D · IHM power and support parts", why:"Supply, configuration and reference parts around U2.", tests:[
+  ["D1","U2 pin 12 (VDDD)","Connector VDD","0, or a small resistor = RC filter"],
+  ["D2","U2 pin 13 (VDDA)","Connector VDD","same as D1"],
+  ["D3","U2 pin 6 (EZPRG)","U2 pin 12","0 or open"],
+  ["D4","U2 pin 6 (EZPRG)","Shunt bolt","0 or open"],
+  ["D5","U2 pin 14 (REF)","X1 top pad","0"],
+  ["D6","X1 bottom pad","Shunt bolt","0"],
+  ["D7","U2 pin 15 (AGND)","C19 top pad","0"],
+  ["D8","C19 bottom pad","Shunt bolt","0"],
+  ["D9","C17 top pad","U2 pin 12","0"],
+  ["D10","C18 top pad","U2 pin 13","0"]]},
+ {key:"E", title:"E · MCU support", why:"Core-voltage cap, reset network, programming header.", tests:[
+  ["E1","U1 pin 5 (VCAP)","C15 left pad","one of E1/E2 is 0"],
+  ["E2","U1 pin 5 (VCAP)","C15 right pad",""],
+  ["E3","U1 pin 1 (NRST)","R16 top pad","one of E3/E4 is 0"],
+  ["E4","U1 pin 1 (NRST)","R16 bottom pad",""],
+  ["E5","U1 pin 1 (NRST)","C16 top pad","one of E5/E6 is 0"],
+  ["E7","Left-edge pad P3","U1 pin 1","0 if P1–P4 are the SWIM header"],
+  ["E8","Left-edge pad P4","Shunt bolt","0"]]},
+];
+
+
+const CMP_PADS = [
+ ["U3 inputs", ["U3 pin 2","U3 pin 3","U3 pin 5","U3 pin 6"]],
+ ["Resistors", ["R6 left","R6 right","R7 left","R7 right","R8 top","R8 bottom","R9 top","R9 bottom","R10 top","R10 bottom","R11 top","R11 bottom","R12 left","R12 right","R13 left","R13 right"]],
+ ["Caps & pads", ["C7 top","C7 bottom","C8 left","C8 right","C10 left","C10 right","C11 left","C11 right","TP9","TP11","TP15","TP17"]],
+];
+const U1_PINS = ["U1 pins", Array.from({length:32},(_,i)=>"U1."+(i+1))];
+const CONN_PARTS = ["Connector-side parts", ["R1 left","R1 right","R2 left","R2 right","R3 left","R3 right","R4 left","R4 right","C2 top","C2 bottom","C3 top","C3 bottom","C4 left","C4 right","C5 left","C5 right","D1 top","D1 bottom","D2 top","D2 bottom","TP1","TP2","V1","V2","V3"]];
+const IHM_PARTS = ["IHM area", ["R17 top","R17 bottom","R18 top","R18 bottom","U2 pin 6","U2 pin 12","U2 pin 13","V18","V20","V24","C16 bottom","TP12","TP21"]];
+const LEFT_PINS = ["Unaccounted U1 pins", ["U1.8","U1.11","U1.12","U1.13","U1.15","U1.16","U1.18","U1.20","U1.21","U1.30"]];
+const SWEEPS = [
+ {id:"H1", anchor:"R6 right pad", why:"Free end of a comparator 33.2k. My guess is an MCU timer (PWM) pin that sets the trip threshold.", groups:[LEFT_PINS]},
+ {id:"H2", anchor:"R13 right pad", why:"Free end of the other 33.2k.", groups:[LEFT_PINS]},
+ {id:"H3", anchor:"R12 right pad", why:"Free end of comparator 2's 1M.", groups:[LEFT_PINS]},
+ {id:"H4", anchor:"Connector PIN8", why:"The last unidentified connector pin.", groups:[LEFT_PINS, ["Connector-side parts", ["R1 left","R1 right","R2 left","R2 right","D1 top","D1 bottom","D2 top","D2 bottom"]]]},
+];
+const sweepState = {};   // id -> {hits:Set, note:""}
+function renderSweeps(){
+  const root = document.getElementById("sweeps");
+  for(const sw of SWEEPS){
+    sweepState[sw.id] = {hits:new Set(), note:""};
+    const box = document.createElement("div"); box.className="sweep";
+    box.innerHTML = `<h3><span>${sw.id}</span><span class="anchor"></span><span class="count" id="cnt-${sw.id}">0 beeped</span></h3><p class="why"></p>`;
+    box.querySelector(".anchor").textContent = "anchor: " + sw.anchor;
+    box.querySelector(".why").textContent = sw.why;
+    for(const [g, list] of sw.groups){
+      const gl = document.createElement("div"); gl.className="group"; gl.textContent=g; box.appendChild(gl);
+      const wrap = document.createElement("div"); wrap.className="targets";
+      for(const t of list){
+        if(t === sw.anchor) continue;
+        const cid = `${sw.id}-${t.replace(/[^A-Za-z0-9]/g,"_")}`;
+        const d = document.createElement("span"); d.className="t";
+        d.innerHTML = `<input type="checkbox" id="${cid}"><label for="${cid}"></label>`;
+        d.querySelector("label").textContent = t;
+        const cb = d.querySelector("input"); cb.dataset.sweep=sw.id; cb.dataset.target=t;
+        cb.addEventListener("change", () => { cb.checked ? sweepState[sw.id].hits.add(t) : sweepState[sw.id].hits.delete(t); countSweep(sw.id); queue("sw:"+sw.id); });
+        wrap.appendChild(d);
+      }
+      box.appendChild(wrap);
+    }
+    const foot = document.createElement("div"); foot.className="foot";
+    foot.innerHTML = `<input class="note" id="note-${sw.id}" placeholder="Note: low readings that didn't beep, or anything odd" autocomplete="off">`;
+    foot.querySelector("input").addEventListener("input", e => { sweepState[sw.id].note = e.target.value; queue("sw:"+sw.id); });
+    box.appendChild(foot);
+    root.appendChild(box);
+  }
+}
+function countSweep(id){ document.getElementById("cnt-"+id).textContent = sweepState[id].hits.size + " beeped"; }
+function applySweepDoc(id, b){
+  const st = sweepState[id]; if(!st) return;
+  st.hits = new Set(Array.isArray(b.hits) ? b.hits : []);
+  document.querySelectorAll(`input[data-sweep="${id}"]`).forEach(cb => { cb.checked = st.hits.has(cb.dataset.target); });
+  const n = document.getElementById("note-"+id);
+  if(document.activeElement !== n){ n.value = b.note || ""; st.note = n.value; }
+  countSweep(id);
+}
+
+const state = {};          // id -> {r, s}
+const els = {};            // id -> {r, s, v, saved}
+let db = null;
+
+function parseOhms(t){
+  if(!t) return null;
+  t = String(t).trim().toLowerCase().replace(/ω|ohms?|Ω/g,"").trim();
+  if(!t) return null;
+  if(/^(open|ol|o\.l\.?|inf|∞)$/.test(t)) return Infinity;
+  const m = t.match(/^~?<?\s*([0-9]*\.?[0-9]+)\s*([km]?)/);
+  if(!m) return NaN;
+  return parseFloat(m[1]) * (m[2]==="k"?1e3 : m[2]==="m"?1e6 : 1);
+}
+function fmt(o){ return o>=1e6? (o/1e6).toPrecision(3)+" MΩ" : o>=1e3? (o/1e3).toPrecision(3)+" kΩ" : o+" Ω"; }
+function verdict(r, s){
+  const a = parseOhms(r), b = parseOhms(s);
+  if(a===null) return ["",""];
+  if(Number.isNaN(a)) return ["can't read that","v-odd"];
+  if(a===Infinity || a>=20e6) return ["open","v-open"];
+  if(a<=2.5) return ["connected","v-ok"];
+  if(b===null || Number.isNaN(b)) return [fmt(a)+" · swap probes too","v-chip"];
+  if(b===Infinity || b>=20e6) return ["one-way: chip path","v-chip"];
+  const ratio = Math.max(a,b)/Math.min(a,b);
+  return ratio<1.15 ? ["resistor ≈ "+fmt(Math.round((a+b)/2)),"v-r"] : ["differs: chip path","v-chip"];
+}
+
+function render(list, rootId){
+  const root = document.getElementById(rootId);
+  for(const sec of list){
+    const s = document.createElement("section");
+    s.innerHTML = `<h2>${sec.title}</h2><p class="why">${sec.why}</p>`;
+    for(const [id,p1,p2,exp] of sec.tests){
+      const row = document.createElement("div"); row.className="row";
+      row.innerHTML = `
+        <div class="id">${id}</div>
+        <div class="probes"><div class="pts"><span class="p1"></span><span class="arrow">↔</span><span class="p2"></span></div>
+          <div class="exp">${exp ? "Expect: "+exp : "&nbsp;"}</div></div>
+        <div class="entry">
+          <div class="inputs">
+            <input class="rd" id="r-${id}" aria-label="${id} reading" placeholder="reading" autocomplete="off">
+            <input class="rd sw" id="s-${id}" aria-label="${id} reading with probes swapped" placeholder="swapped" autocomplete="off">
+          </div>
+          <div class="quick">
+            <button class="q" type="button" data-v="0">0</button>
+            <button class="q" type="button" data-v="open">open</button>
+            <span class="verdict" id="v-${id}"></span>
+          </div>
+        </div>`;
+      row.querySelector(".p1").textContent = p1;
+      row.querySelector(".p2").textContent = p2;
+      const r = row.querySelector(`#r-${id}`), sw = row.querySelector(`#s-${id}`), v = row.querySelector(`#v-${id}`);
+      els[id] = {r, s:sw, v};
+      state[id] = {r:"", s:""};
+      const onInput = () => { state[id] = {r:r.value.trim(), s:sw.value.trim()}; paint(id); queue(id); };
+      r.addEventListener("input", onInput); sw.addEventListener("input", onInput);
+      row.querySelectorAll("button.q").forEach(b => b.addEventListener("click", () => { r.value = b.dataset.v; onInput(); }));
+      s.appendChild(row);
+    }
+    root.appendChild(s);
+  }
+  progress();
+}
+function paint(id){
+  const [t,c] = verdict(state[id].r, state[id].s);
+  els[id].v.textContent = t; els[id].v.className = "verdict "+c;
+}
+function progress(){
+  const left = SECTIONS.flatMap(sec => sec.tests.map(t=>t[0])).filter(id => !(state[id] && state[id].r) && !["E7","E8"].includes(id));
+  document.getElementById("r2left").textContent = "Rounds 2 and 4, kept for reference. E7/E8 are covered by your notes.";
+  const p = document.getElementById("progress"); p.innerHTML="";
+  for(const sec of [...ROUND5, ...ROUND4, ...SECTIONS]){
+    const n = sec.tests.length, d = sec.tests.filter(t => state[t[0]] && state[t[0]].r).length;
+    const el = document.createElement("span"); el.className = "pill"+(d===n?" done":"");
+    el.textContent = `${sec.key} ${d}/${n}`; p.appendChild(el);
+  }
+}
+
+// ---- storage: one doc per test in "readings", plus meta docs
+const timers = {}, inflight = {}, again = {};
+function setStatus(t, err){ const s=document.getElementById("status"); s.textContent=t; s.className="status"+(err?" err":""); }
+function queue(key){
+  progress();
+  clearTimeout(timers[key]);
+  timers[key] = setTimeout(() => flush(key), 600);
+}
+async function flush(key){
+  if(!db) { setStatus("Not saved: storage isn't available in this view. Copy your readings into the chat instead.", true); return; }
+  if(inflight[key]){ again[key]=true; return; }
+  inflight[key]=true;
+  try{
+    let ref, body;
+    if(key==="__lead"){ ref=db.doc("meta/lead"); body={value:document.getElementById("lead").value.trim(), at:new Date().toISOString()}; }
+    else if(key==="__free"){ ref=db.doc("meta/free"); body={text:document.getElementById("free").value, at:new Date().toISOString()}; }
+    else if(key.startsWith("sw:")){ const id=key.slice(3); ref=db.collection("sweeps").doc(id); body={anchor:SWEEPS.find(x=>x.id===id).anchor, hits:[...sweepState[id].hits], note:sweepState[id].note, at:new Date().toISOString()}; }
+    else { ref=db.collection("readings").doc(key); body={reading:state[key].r, swapped:state[key].s, at:new Date().toISOString()}; }
+    await ref.set(body);
+    setStatus("Saved " + new Date().toLocaleTimeString());
+  }catch(e){
+    setStatus(e && e.code==="invalid_argument" ? "Not saved: this view can't write. Open it signed in as the owner." : "Not saved ("+(e&&e.code||"error")+"). Your typing is still on screen; try again in a moment.", true);
+  }finally{
+    inflight[key]=false;
+    if(again[key]){ again[key]=false; flush(key); }
+  }
+}
+
+
+renderSweeps();
+render([...ROUND5, ...ROUND4, ...SECTIONS], "sections");
+document.getElementById("lead").addEventListener("input", () => queue("__lead"));
+document.getElementById("free").addEventListener("input", () => queue("__free"));
+
+(async () => {
+  const loadTimer = setTimeout(() => setStatus("Still connecting to storage. Readings you type will save once it answers.", true), 10000);
+  db = window.claude?.use ? await window.claude.use("db") : null;
+  if(!db){ clearTimeout(loadTimer); setStatus("Storage isn't available here. Readings won't be saved; paste them into the chat.", true); return; }
+  const focused = () => document.activeElement && document.activeElement.id;
+  db.collection("readings").onSnapshot(snap => {
+    clearTimeout(loadTimer);
+    if(!snap.metadata.fromCache) setStatus("Connected. Readings save as you type.");
+    for(const d of snap.docs){
+      const id=d.id, b=d.data()||{};
+      if(!els[id]) continue;
+      const f = focused();
+      if(f!=="r-"+id) els[id].r.value = b.reading||"";
+      if(f!=="s-"+id) els[id].s.value = b.swapped||"";
+      state[id] = {r:els[id].r.value.trim(), s:els[id].s.value.trim()};
+      paint(id);
+    }
+    progress();
+  }, e => { clearTimeout(loadTimer); setStatus("Storage stopped answering ("+e.code+"). Reload the page.", true); });
+  db.collection("sweeps").onSnapshot(snap => { for(const d of snap.docs) applySweepDoc(d.id, d.data()||{}); }, ()=>{});
+  db.doc("meta/lead").onSnapshot(d => { if(d.exists && focused()!=="lead") document.getElementById("lead").value = d.data().value||""; }, ()=>{});
+  db.doc("meta/free").onSnapshot(d => { if(d.exists && focused()!=="free") document.getElementById("free").value = d.data().text||""; }, ()=>{});
+})();
+</script>

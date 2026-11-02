@@ -1,0 +1,112 @@
+id,a,b,result,ohms,date,notes
+M1,U2.3,GND,open,,2026-11-01,ETS is not connected to VSS (user measurement). Rules out ETS on the shunt bar if VSS is bonded to the bar.
+M2,U3.1,J1.7,short,1-2,2026-11-01,OUT1 to connector PIN7
+M3,U3.7,J1.7,short,1-2,2026-11-01,OUT2 to connector PIN7
+M4,U2.4,VC1..VC8,short,~1,2026-11-01,VBAT to every centre via
+M5,U2.3,VC1..VC8,open,,2026-11-01,ETS to every centre via
+M6,VC1..VC8,GND,short,<1,2026-11-01,Centre cluster to GND and both shunt bolts
+M7,U2.3,U2.4,open,1.8M-15M drifting,2026-11-01,Drifting MOhm = leakage/capacitor charging - not a connection
+M8,U2.16,U2.3,open,,2026-11-01,ETR to ETS
+M9,U2.16,U2.4,open,1.3M,2026-11-01,ETR to VBAT - leakage level
+M10,U2.16,R14/R15 pads,open,,2026-11-01,
+M11,U2.1,R14.1,short,<3,2026-11-01,RSHL to R14 left
+M12,U2.1,R14.2,R,800,2026-11-01,
+M13,U2.1,R15.1,R,1600,2026-11-01,
+M14,U2.1,R15.2,R,800,2026-11-01,
+M15,U2.2,R15.1,short,<1,2026-11-01,RSHH to R15 left
+M16,U2.2,R15.2,R,800,2026-11-01,
+M17,U2.2,R14.2,R,800,2026-11-01,
+M18,U2.2,R14.1,R,1600,2026-11-01,
+M19,U2.1,C14.1,short,,2026-11-01,
+M20,U2.1,C14.2,R,800,2026-11-01,
+M21,U2.1,C13.1,short,,2026-11-01,
+M22,U2.1,C13.2,R,1600,2026-11-01,
+M23,U2.2,C13.1,R,1600,2026-11-01,
+M24,U2.2,C14.1,R,1600,2026-11-01,
+M25,U2.2,C13.2,short,,2026-11-01,
+M26,U2.2,C14.2,R,800,2026-11-01,
+M27,U2.1,GND,short,<3,2026-11-01,RSHL to bolts/GND
+M28,"R6/R7 ""junction""",U3.2 and U3.6,R,1000,2026-11-01,Ambiguous (instruction did not name pads) - superseded by round 2 A1-A4
+M29,"R12/R13 ""junction""",U3.2 and U3.6,R,1000,2026-11-01,Ambiguous - superseded by round 2 A1-A4
+M30,V19,R6.2,R,7.4k,2026-11-01,
+M31,V19,R13.2,R,7.3k,2026-11-01,
+M32,V19,R8.1,R,230,2026-11-01,
+M33,V19,R11.2,R,240,2026-11-01,
+M34,V22,R6.2 / R13.2 / R8.1 / R11.2,R,7.4k / 7.4k / 240 / 240,2026-11-01,Identical to V19 -> V19 and V22 are both on the bar
+R2-A1,U3.2,R6.2,R,8.5k / 16.8k,2026-11-02,chip path
+R2-A2,U3.2,R7.1,R,1000 / 1000,2026-11-02,
+R2-A3,U3.6,R12.1,R,1000 / 1000,2026-11-02,
+R2-A4,U3.6,R13.2,R,8.5k / 16k,2026-11-02,chip path
+R2-A5,U3.3,R8.1,short,4,2026-11-02,
+R2-A6,U3.5,R11.2,R,400 / 400,2026-11-02,
+R2-A7,R7.2,J1.1,short,0,2026-11-02,
+R2-A8,R12.2,J1.1,R,2600 / 2600,2026-11-02,
+R2-A9,R6.1,RS1,R,200 / 200,2026-11-02,
+R2-A10,R13.1,RS1,R,200 / 200,2026-11-02,
+R2-A11,U3.8,J1.1,short,0,2026-11-02,
+R2-A12,U3.4,RS1,short,0,2026-11-02,
+R2-B1,U1.27,U2.9,short,0,2026-11-02,
+R2-B2,U1.28,U2.10,short,0,2026-11-02,
+R2-B3,U1.29,U2.11,short,0,2026-11-02,
+R2-B4,U1.32,U2.11,open,,2026-11-02,
+R2-B5,R17.1,U2.10,R,15000 / 15000,2026-11-02,
+R2-B6,R18.1,U2.11,open,,2026-11-02,
+R2-B7,R17.2,J1.1,open,,2026-11-02,
+R2-B8,R18.2,J1.1,open,,2026-11-02,
+R2-C5,J1.8,U1.30,open,,2026-11-02,
+R2-C6,J1.8,U1.31,open,,2026-11-02,
+R2-C7,J1.8,U1.1,R,144k / 30k,2026-11-02,chip path
+R2-C8,J1.8,U1.26,open,,2026-11-02,
+R2-C9,J1.7,R3.1 / R3.2 / R4.1 / R4.2,R,19k / 93k / 19k / 93k,2026-11-02,
+R2-D1,U2.12,J1.1,R,90k / 90k,2026-11-02,
+R2-D2,U2.13,J1.1,R,90k / 90k,2026-11-02,
+R2-D3,U2.6,U2.12,R,15k / 15k,2026-11-02,
+R2-D4,U2.6,RS1,R,140k / 100k,2026-11-02,chip path
+R2-D5,U2.14,X1.1,short,0,2026-11-02,
+R2-D6,X1.2,RS1,short,0,2026-11-02,
+R2-D7,U2.15,C19.1,short,0,2026-11-02,
+R2-D8,C19.2,RS1,short,0,2026-11-02,
+R2-D9,C17.1,U2.12,short,0,2026-11-02,
+R2-D10,C18.1,U2.13,short,0,2026-11-02,
+R2-E1,U1.5,C15.1,R,15k / 90k,2026-11-02,chip path
+R2-E2,U1.5,C15.2,short,0,2026-11-02,
+R2-E3,U1.1,R16.1,short,0,2026-11-02,
+R2-E4,U1.1,R16.2,R,14k / 14k,2026-11-02,
+R2-E5,U1.1,C16.1,short,0,2026-11-02,
+R2-N1,U2.5,C15.1,short,0,2026-11-02,user note
+R2-N2,P3,J1.2,short,,2026-11-02,user note
+R2-N3,P4,U1.1,short,,2026-11-02,user note
+R3-S1,U3.2,sweep,hits,"R10.1, C8.2, TP11, R3.1",2026-11-02,
+R3-S2,U3.6,sweep,hits,"C10.2, TP15, R9.2",2026-11-02,
+R3-S3,U3.3,sweep,hits,"TP9, R8.1, R7.1, R6.1, C8.1",2026-11-02,
+R3-S4,U3.5,sweep,hits,"C10.1, TP17, R13.1, R12.1, R11.2",2026-11-02,
+R3-S5,RS1,sweep,hits,"R3.2, C4.2",2026-11-02,
+R4-C1..C4,J1.3-6,U1.17/22/24/23,short,0,2026-11-02,SPI confirmed
+R4-F1,R6.2,U3.1,R,11k / 18k,2026-11-02,chip path
+R4-F2,R13.2,U3.7,R,2.3k / 2.6k,2026-11-02,
+R4-F3,R10.2,RS1,short,0,2026-11-02,
+R4-F4,R10.2,J1.1,R,16k / 16k,2026-11-02,
+R4-F5,R9.1,RS1,short,0,2026-11-02,
+R4-F6,R12.2,R5.2,R,16k / 7.5k,2026-11-02,chip path
+R4-F7,U2.12,U2.13,short,0,2026-11-02,
+R4-F8,U2.12,V18,short,0,2026-11-02,
+R4-F9,C16.2,RS1,short,0,2026-11-02,
+R4-S6,J1.1,sweep,hits,"R5.2, R16.2, C7.1, C11.2",2026-11-02,
+R5-G1,J1.7,R5.1,short,0,2026-11-02,
+R5-G2,R6.2,R13.2,R,400 / 400,2026-11-02,
+R5-G3,R6.2,R12.2,R,400 / 400,2026-11-02,
+R5-G4,R13.2,J1.7,R,2700 / 2700,2026-11-02,
+R5-G5,R6.2,J1.7,R,2700 / 2700,2026-11-02,
+R5-G6,C7.2,RS1,short,0,2026-11-02,
+R5-G7,C11.1,RS1,short,0,2026-11-02,
+R5-G8,R17.1,U2.12,short,0,2026-11-02,
+R5-G9,R18.1,U2.6,R,15k / 15k,2026-11-02,
+R5-G10,R18.2,U2.6,R,30k / 30k,2026-11-02,
+R5-G11,J1.8,RS1,R,144k / 102k,2026-11-02,chip path
+R5-G12,J1.8,J1.1,R,131k / 116k,2026-11-02,chip path
+R5-S7,U2.12,sweep,hits,"U1.2, U1.3, U1.19, U1.32 (+U1.31 per note)",2026-11-02,
+R5-N4,R17.1,R18.1 / V18,short,,2026-11-02,user note
+R6-H1,R6.2,U1.6 / U1.7,short,,2026-11-02,user note
+R6-H4,J1.8,U1.21,short,,2026-11-02,
+R7-1,R12.2,U1.6,R,2.67k,2026-11-02,= R5 value -> R12 right on OC_FLAG
+R7-2,R12.2,J1.7,short,0,2026-11-02,confirmed

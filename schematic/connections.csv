@@ -1,0 +1,170 @@
+ref,pin,net,status,note
+U1,1,NRST,measured,"0 ohm to R16 top, C16 top, pad P4"
+U1,2,IHM_VDDD,measured,S7: beeps to U2.12 - GPIO-powered IHM (PA1)
+U1,3,IHM_VDDD,measured,S7: PA2
+U1,4,GND,datasheet,
+U1,5,VCAP,datasheet,Needs 470nF-3.3uF to VSS; TP10 directly below
+U1,6,+5V,datasheet,
+U1,7,+5V,datasheet,
+U1,8,,unknown,PF4/AIN12
+U1,9,+5V,datasheet,VDDA; via V13 (VDD) and C6 adjacent
+U1,10,GND,datasheet,VSSA
+U1,11,,unknown,PB5/AIN5 (I2C_SDA alt) - no I2C device on board
+U1,12,,unknown,PB4/AIN4 (I2C_SCL alt)
+U1,13,,unknown,PB3/AIN3
+U1,14,OC_FLAG,measured,G1: PIN7 0 ohm to R5 top -> MCU PB2/AIN2 reads the comparator flag; R5 2.7k pull-up
+U1,15,,unknown,PB1/AIN1
+U1,16,,unknown,PB0/AIN0
+U1,17,SPI_NSS,measured,C1
+U1,18,,unknown,PC1 - one of pins 18-21 goes to TP3 / TP4
+U1,19,IHM_VDDD,measured,S7: PC2
+U1,20,,unknown,PC3
+U1,21,PIN8_PC4,measured,H4: connector PIN8
+U1,22,SPI_SCK,measured,C2
+U1,23,SPI_MOSI,measured,C4
+U1,24,SPI_MISO,measured,C3
+U1,25,IHM_CLK,measured,User-established: PD0 -> via -> U2.8
+U1,26,SWIM,seen,PD1/SWIM -> pad P2
+U1,27,IHM_SCLK,measured,B1: 0 ohm to U2.9
+U1,28,IHM_SDAT,measured,B2: 0 ohm to U2.10
+U1,29,IHM_INTN,measured,B3: 0 ohm to U2.11
+U1,30,UART_TX,unknown,PD5/LINUART_TX - no visible trace
+U1,31,IHM_VDDD,measured,S7 note: PD6 also beeps to U2.12 (not UART RX)
+U1,32,IHM_VDDD,measured,S7: PD7
+U2,1,GND,measured,RSHL <3 ohm to both bolts / GND / R14 left pad / C13 top / C14 top
+U2,2,IHM_RSHH,measured,<1 ohm to R15 left pad and C13 bottom; 820 to R14 right/R15 right/C14 bottom; 1640 to R14 left/C13 top/C14 top
+U2,3,,unknown,"ETS: open to every centre via; 1.8M->15M drifting to VBAT = leakage, NOT a connection. Earlier ""trace to VC6"" was a misread. Likely unused (NC)"
+U2,4,GND,measured,VBAT ~1 ohm (= lead resistance) to every centre via; cluster <1 ohm to GND and both bolts. Voltage channel apparently unused (tied to bar)
+U2,5,GND,measured,0 ohm to C15 left pad (user note)
+U2,6,IHM_EZPRG,inferred,15k pull-up (R17) to IHM VDDD
+U2,7,GND,datasheet,VSSD
+U2,8,IHM_CLK,measured,Via to U1.25 (user-established)
+U2,9,IHM_SCLK,measured,B1
+U2,10,IHM_SDAT,measured,B2
+U2,11,IHM_INTN,measured,B3
+U2,12,IHM_VDDD,measured,F7: = U2.13; F8: = via V18. Not +5V (90k). Source still unknown
+U2,13,IHM_VDDD,measured,F7: 0 ohm to U2.12
+U2,14,IHM_REF,measured,D5
+U2,15,IHM_AGND,measured,D7
+U2,16,,unknown,"ETR: open to ETS, not on R14/R15 pads; 1.3M to VBAT = leakage, not a connection. Likely unused (NC)"
+U3,1,OC_FLAG,measured,1-2 ohm to J1 PIN7 (wired-OR with OUT2)
+U3,2,CMP1_INN,measured,"S1 sweep: R10 top, C8 right, TP11, R3 left"
+U3,3,CMP1_INP,measured,"S3 sweep: R8 top, R7 left, R6 left, C8 left, TP9"
+U3,4,GND,measured,A12
+U3,5,CMP2_INP,measured,"S4 sweep: R11 bottom, R12 left, R13 left, C10 left, TP17 (A6 400R reading disagrees - sweep trusted)"
+U3,6,CMP2_INN,measured,"S2 sweep: R9 bottom, C10 right, TP15"
+U3,7,OC_FLAG,measured,1-2 ohm to J1 PIN7 (wired-OR with OUT1)
+U3,8,+5V,measured,A11
+J1,1,+5V,inferred,Harness VDD (annotation)
+J1,2,GND,measured,VSS <1 ohm to both shunt bolts
+J1,3,SPI_NSS,measured,C1: 0 ohm to U1.17
+J1,4,SPI_SCK,measured,C2: 0 ohm to U1.22
+J1,5,SPI_MISO,measured,C3: 0 ohm to U1.24
+J1,6,SPI_MOSI,measured,C4: 0 ohm to U1.23
+J1,7,OC_FLAG,measured,U3 OUT1 + OUT2 wired-OR: hardware overcurrent flag to BMS
+J1,8,PIN8_PC4,measured,H4: beeps to U1.21 (PC4/TIM1_CH4)
+RS1,1,GND,measured,"Board GND is bonded to the bar (which end: unknown, meter cannot tell)"
+RS1,2,SHUNT_HI,inferred,Other end of the resistive element; must differ from RSHL end or the IHM would read 0
+C1,1,+5V,inferred,Input bulk cap
+C1,2,GND,inferred,
+C6,1,+5V,inferred,VDDA decoupling
+C6,2,GND,inferred,VSSA
+C15,1,GND,measured,Left pad 0 ohm to U2.5 VSS
+C15,2,VCAP,measured,E2: right pad 0 ohm to U1.5
+C16,1,NRST,measured,E5: top pad 0 ohm to U1.1
+C16,2,GND,inferred,E6 not measured yet
+R16,1,NRST,measured,E3: top pad 0 ohm to U1.1
+R16,2,+5V,measured,S6: beeps to VDD (NRST pull-up)
+R5,1,OC_FLAG,measured,G1
+R5,2,+5V,measured,S6: bottom pad beeps to VDD
+R17,1,IHM_VDDD,measured,G8 + user note: R17 top = R18 top = V18
+R17,2,IHM_EZPRG,inferred,G9 (VDDD-EZPRG 15k) + G10 (R18 bottom-EZPRG 30k = 15k+15k) -> R17 is the EZPRG pull-up
+R18,1,IHM_VDDD,measured,user note: same net as R17 top and V18
+R18,2,IHM_SDAT,inferred,"B5 15k VDDD-SDAT, G10 -> R18 is the SDAT pull-up"
+C17,1,IHM_VDDD,measured,D9: 0 ohm to U2.12
+C17,2,GND,inferred,decoupling
+C18,1,IHM_VDDD,measured,D10 + F7
+C18,2,GND,inferred,decoupling
+X1,1,IHM_REF,measured,D5
+X1,2,GND,measured,D6: 0 ohm to bolt
+C19,1,IHM_AGND,measured,D7
+C19,2,GND,measured,D8: 0 ohm to bolt
+R14,1,SHUNT_HI,inferred,Measured on the bar (<3 ohm to RSHL); must be the end opposite RSHL - see RS1.2
+R14,2,IHM_RSH_MID,measured,820 from RSHL and from RSHH; = R15 right = C14 bottom
+C13,1,GND,measured,Top pad continuous to RSHL
+C13,2,IHM_RSHH,measured,Bottom pad continuous to RSHH
+C14,1,GND,measured,Top pad continuous to RSHL
+C14,2,IHM_RSH_MID,measured,Bottom pad 820 from RSHL and RSHH
+R15,1,IHM_RSHH,measured,<1 ohm to U2.2 RSHH
+R15,2,IHM_RSH_MID,measured,820 from both RSHL and RSHH
+C7,1,+5V,measured,S6: top pad beeps to VDD
+C7,2,GND,measured,G6
+R8,1,CMP1_INP,measured,S3
+R8,2,SHUNT_HI,inferred,Bottom pad on V19 = bar (measured); which end inferred (V19 annotated SHUNT_A)
+C8,1,CMP1_INP,measured,S3
+C8,2,CMP1_INN,measured,S1
+R9,1,SHUNT_HI,inferred,"On the bar (F5 beeps to bolt). End inferred: pad sits at via V19 with R8, and -IN2 must see the opposite end to +IN2"
+R9,2,CMP2_INN,measured,S2
+R10,1,CMP1_INN,measured,S1
+R10,2,GND,inferred,On the bar (F3 beeps to bolt). End inferred: -IN1 must see the opposite end to +IN1 (SHUNT_HI)
+R11,1,GND,inferred,Top pad on V22 = bar (measured); which end inferred (V22 annotated SHUNT_B/VSS)
+R11,2,CMP2_INP,measured,S4
+C10,1,CMP2_INP,measured,S4
+C10,2,CMP2_INN,measured,S2
+R6,1,CMP1_INP,measured,S3
+R6,2,+5V,measured,H1: beeps to U1.6 (VDD) and U1.7 (VDDIO); G5 2.7k to PIN7 = through R5
+R7,1,CMP1_INP,measured,S3
+R7,2,+5V,measured,A7: 0 ohm to connector VDD
+R12,1,CMP2_INP,measured,S4
+R12,2,OC_FLAG,measured,Beeps to connector PIN7: 1M feedback (hysteresis) from OC_FLAG to +IN2
+R13,1,CMP2_INP,measured,S4
+R13,2,+5V,inferred,Same behaviour as R6 right (G4 2.7k to PIN7 = R5; 7.3k to bar). H2 sweep: no MCU-pin hits
+C11,1,GND,measured,G7
+C11,2,+5V,measured,S6: right pad beeps to VDD
+R1,1,,unknown,
+R1,2,,unknown,
+R2,1,,unknown,Near via V2 (Pin 7)
+R2,2,,unknown,
+R3,1,CMP1_INN,measured,S1 note: continuity to R3 left
+R3,2,GND,measured,S5: beeps to bolt
+R4,1,CMP1_INN,inferred,C9: same reading as R3 left from PIN7
+R4,2,GND,inferred,C9: same reading as R3 right from PIN7
+C2,1,,unknown,
+C2,2,,unknown,
+C3,1,,unknown,
+C3,2,,unknown,
+C4,1,,unknown,
+C4,2,GND,measured,S5: beeps to bolt
+C5,1,,unknown,
+C5,2,,unknown,
+D1,1,,unknown,Probably ESD diode from a connector line to GND
+D1,2,,unknown,
+D2,1,,unknown,Probably ESD diode from a connector line to GND
+D2,2,,unknown,
+P1,1,+5V,inferred,Annotation: VDD
+P2,1,SWIM,seen,Trace from U1.26
+P3,1,GND,measured,User: P3 to connector VSS
+P4,1,NRST,measured,User: P4 continuous to U1.1
+P5,1,,unknown,
+P6,1,,unknown,
+TP1,1,,unknown,
+TP2,1,,unknown,
+TP3,1,,unknown,Trace to one of U1.18-21
+TP4,1,,unknown,Trace to one of U1.18-21
+TP5,1,IHM_CLK,seen,
+TP6,1,IHM_SDAT,seen,
+TP7,1,IHM_SCLK,seen,
+TP8,1,IHM_INTN,measured,trace from U1.29
+TP9,1,CMP1_INP,measured,S3
+TP10,1,VCAP,inferred,Directly below U1.5
+TP11,1,CMP1_INN,measured,S1
+TP12,1,,unknown,
+TP13,1,,unknown,
+TP14,1,,unknown,
+TP15,1,CMP2_INN,measured,S2
+TP16,1,,unknown,
+TP17,1,CMP2_INP,measured,S4
+TP18,1,,unknown,
+TP19,1,IHM_AGND,seen,
+TP20,1,IHM_REF,seen,
+TP21,1,,unknown,

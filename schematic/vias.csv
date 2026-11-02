@@ -1,0 +1,34 @@
+id,board_x,board_y,note
+V1,1674,896,
+V2,1792,972,Annotated "Pin 7"
+V3,1888,988,
+V4,2081,1080,
+V5,1278,1096,Above U1 pins 23/24 (MOSI/MISO)
+V6,768,1132,Double via - annotated VDD
+V7,1894,1181,
+V8,1782,1261,On R5 top pad (MCU_AIN2)
+V9,1991,1293,
+V10,944,1300,U1.25 PD0 -> IHM_CLK (MCU side)
+V11,948,1398,U1.27 PD2 -> IHM_SCLK (MCU side)
+V12,2068,1425,
+V13,1796,1528,Annotated VDD (next to U1 VDDA)
+V14,2069,1585,
+V15,1077,1587,U1.31 PD6 UART_RX
+V16,1659,1724,
+V17,1163,1738,Next to U1.1 NRST
+V18,809,1806,Annotated "TO IHM VDDD"
+V19,1778,1967,Annotated SHUNT_A (by R8/R9)
+V20,1016,2010,Annotated SDAT (IHM side)
+V21,810,2075,Annotated IHM CLK (by U2.8)
+V22,1696,2293,Annotated SHUNT_B / VSS
+V23,2121,2732,Annotated VDD (by C11)
+V24,818,2891,Annotated IHM VDDD (U2.12 trace)
+V25,1472,2978,
+VC1,1393,1900,Centre cluster
+VC2,1477,1900,Centre cluster
+VC3,1440,1955,Centre cluster
+VC4,1394,2010,Centre cluster - U2.4 VBAT trace ends here
+VC5,1486,2008,Centre cluster
+VC6,1443,2058,Centre cluster - U2.3 ETS trace heads here
+VC7,1398,2105,Centre cluster
+VC8,1488,2112,Centre cluster

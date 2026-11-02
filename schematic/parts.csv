@@ -1,0 +1,71 @@
+ref,kind,value,marking,board_x,board_y,orient,group,description
+U1,STM8AF6266TC,STM8AF6266TC,STM8AF 6266TC,1410,1460,-,ic,8-bit MCU LQFP32; SPI slave to BMS; drives IHM
+U2,IHM-A-1500,IHM-A-1500,IHM-A-1500 P46,1050,2470,-,ic,Isabellenhuette current/voltage acquisition ASIC SOIC16
+U3,LM2903,LM2903B-Q1,2903AVQ,1985,2110,-,ic,Dual open-collector comparator SOIC8 (hardware overcurrent)
+J1,CONN8,Conn_01x08,,1300,640,-,ic,8-way harness connector (pins numbered left to right in photo)
+RS1,SHUNT,Shunt bar,,1420,2000,-,ic,Copper bar with resistive element under board centre (SHUNT_A = left bolt; SHUNT_B = right bolt)
+C1,C,C?,1206,862,968,h,power,Large ceramic next to connector VDD
+C6,C,C?,0603,1797,1608,h,mcu,Right of U1 VDDA/VSSA pins
+C15,C,C?,1206,1137,1858,h,mcu,Large ceramic below-left of U1
+C16,C,C?,0603,950,1700,v,mcu,Left of R16 (near U1 NRST)
+R16,R,13.3k,13C,1030,1700,v,mcu,Near U1 NRST
+R5,R,2.70k,2701,1823,1371,v,mcu,Right of U1; top pad has trace from U1 pin 14 (PB2) and via V8
+R17,R,15.0k,18C,808,1917,v,ihm,Below via V18
+R18,R,15.0k,18C,925,1908,v,ihm,Below via V18
+C17,C,C?,0603,898,2961,v,ihm,Below U2 left end (near via V24)
+C18,C,C?,0603,988,2956,v,ihm,Below U2 left end
+X1,C,C? (REF?),odd body,1145,2980,v,ihm,Below TP20 (REF); unusual body - possibly REF cap
+C19,C,C?,0603,1300,2992,v,ihm,Below TP19 (AGND)
+R14,R,820,8200,1483,2279,h,ihm,Right of U2 pin-1 end
+C13,C,C?,0603,1430,2405,v,ihm,Between R14 and R15
+C14,C,C?,0603,1552,2411,v,ihm,Between R14 and R15
+R15,R,820,8200,1483,2542,h,ihm,Right of U2 pin-16 end
+C7,C,C?,0603,1667,1836,v,cmp,Left of R8
+R8,R,220,2200,1776,1832,v,cmp,Above SHUNT_A via V19
+C8,C,C?,0805,1971,1802,h,cmp,Directly above U3 pins 2/3
+R9,R,220,2200,1780,2097,v,cmp,Below SHUNT_A via V19
+R10,R,820,8200,1671,2145,v,cmp,Left of R9
+R11,R,220,2200,1738,2443,v,cmp,Below SHUNT_B via V22
+C10,C,C?,0805,1910,2424,h,cmp,Directly below U3 pins 5/6
+R6,R,33.2k,3322,2002,1492,h,cmp,Threshold divider (upper pair)
+R7,R,1.00M,1004,2002,1666,h,cmp,Threshold divider (upper pair)
+R12,R,1.00M,1004,1948,2538,h,cmp,Threshold divider (lower pair)
+R13,R,33.2k,3322,2048,2819,h,cmp,Threshold divider (lower pair)
+C11,C,C?,0603,2086,2657,h,cmp,Next to via V23 (VDD)
+R1,R,1.00M,01E,1155,900,h,conn,Top strip below connector
+R2,R,1.00M,01E,1770,890,h,conn,Top strip next to via V2 (Pin 7)
+R3,R,82k,823,2002,892,h,conn,Top-right strip
+R4,R,82k,823,1992,1071,h,conn,Top-right strip
+C2,C,C?,0603,1295,935,v,conn,Top strip
+C3,C,C?,0603,1600,925,v,conn,Top strip
+C4,C,C?,0603,1992,987,h,conn,Top-right strip
+C5,C,C?,0603,1992,1171,h,conn,Top-right strip
+D1,D,ESD?,box symbol,1390,935,v,conn,Small black 2-terminal - probably ESD/TVS diode
+D2,D,ESD?,box symbol,1510,935,v,conn,Small black 2-terminal - probably ESD/TVS diode
+P1,TP,Pad,,818,1244,-,tp,Large left-edge pad 1
+P2,TP,Pad,,824,1399,-,tp,Large left-edge pad 2
+P3,TP,Pad,,828,1554,-,tp,Large left-edge pad 3
+P4,TP,Pad,,835,1707,-,tp,Large left-edge pad 4
+P5,TP,Pad,,1055,1143,-,tp,Large framed pad above-left of U1
+P6,TP,Pad,,2124,2938,-,tp,Large pad bottom-right corner
+TP1,TP,TP,,1328,853,-,tp,Small pad at connector seam
+TP2,TP,TP,,1683,973,-,tp,
+TP3,TP,TP,,1410,1094,-,tp,Above U1 top row
+TP4,TP,TP,,1524,1091,-,tp,Above U1 top row
+TP5,TP,TP,,1032,1279,-,tp,Left of U1 pin 25
+TP6,TP,TP,,1046,1453,-,tp,Left of U1 pin 28
+TP7,TP,TP,,930,1466,-,tp,Under via V11
+TP8,TP,TP,,990,1574,-,tp,Left of U1 pin 29/30
+TP9,TP,TP,,1887,1715,-,tp,Above C8
+TP10,TP,TP,,1431,1804,-,tp,Below U1 pin 5 (VCAP)
+TP11,TP,TP,,1647,2027,-,tp,Left of U3
+TP12,TP,TP,,921,2069,-,tp,Right of via V21
+TP13,TP,TP,,1544,2171,-,tp,Below via cluster (right)
+TP14,TP,TP,,1406,2186,-,tp,Below via cluster (left) / right of U2 pin 1
+TP15,TP,TP,,1785,2230,-,tp,Below R9
+TP16,TP,TP,,1623,2409,-,tp,Right of C14
+TP17,TP,TP,,1737,2573,-,tp,Below R11
+TP18,TP,TP,,1437,2640,-,tp,Below R15
+TP19,TP,TP,,1290,2874,-,tp,Below U2 pin 15 (AGND)
+TP20,TP,TP,,1141,2881,-,tp,Below U2 pin 14 (REF)
+TP21,TP,TP,,799,2956,-,tp,Below-left of U2
