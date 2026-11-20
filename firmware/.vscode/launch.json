@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug shunt firmware (OpenOCD)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/shunt.elf",
+      "configFiles": ["interface/stlink.cfg", "target/stm32f0x.cfg"],
+      "preLaunchTask": "build",
+      "runToEntryPoint": "main"
+    }
+  ]
+}
