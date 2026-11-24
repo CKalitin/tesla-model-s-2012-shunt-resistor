@@ -1,7 +1,8 @@
-/* STM32F031K6: 32 KB flash, 4 KB SRAM */
+/* STM32F031K6: 32 KB flash, 4 KB SRAM.
+ * The last 1 KB page (0x08007C00) holds calibration data, see src/cal.c. */
 MEMORY
 {
-  FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 32K
+  FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 31K
   RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 4K
 }
 

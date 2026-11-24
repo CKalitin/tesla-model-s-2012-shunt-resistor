@@ -3,11 +3,28 @@
 Bare-metal C. No HAL and no CubeMX: just a Makefile, a linker script and register-level code.
 It reads the shunt over SPI and streams current to the ST-LINK virtual COM port.
 
-```
-I = 12.345 A  (12345 mA)
+## Get readings
+
+With the board flashed and plugged in over USB, from the `firmware/` folder:
+
+```bash
+make monitor
 ```
 
+That opens a serial terminal (picocom, 115200 baud) on `/dev/ttyACM0` and the current streams in:
+
+```
+I = 2.981 A  (raw 59)
+I = 3.032 A  (raw 60)
+```
+
+`raw` is the shunt's own number; the amps are after calibration (see [Terminal commands](#terminal-commands)).
+Type `a` and Enter for an averaged reading. Quit with **Ctrl-A** then **Ctrl-X**.
+If the board shows up as a different port, use `make monitor PORT=/dev/ttyACM1`.
+
 ## Wiring
+
+![NUCLEO-F031K6 to shunt wiring](docs/nucleo-wiring.svg)
 
 | Shunt J1 | Signal | Nucleo pin | MCU pin |
 |---|---|---|---|
@@ -68,7 +85,9 @@ This comes from [Tom-evnut/Tesla-Current-Shunt](https://github.com/Tom-evnut/Tes
   `x` commands reproduced it, and a 20 s soak at 20 Hz had no errors. Suspect a wiring glitch.
   If you see `no reply` after it had been working, power-cycle the shunt.
 
-Sign convention and accuracy still need a test with real current through the shunt.
+First real-current test: 3 A read about 60 raw counts, so on this shunt the raw value is **not**
+mA (roughly 50 mA per count). Calibration (`z`, then `c <mA>`) is saved in the last flash page
+(0x08007C00) and survives power cycles and reflashing.
 
 ## Tools (one-time)
 
@@ -101,7 +120,11 @@ Type a command and press Enter. The stream pauses while you type.
 | `s` | stream on/off |
 | `p 50` | sample every 50 ms |
 | `r` | also print the raw 8 reply bytes |
-| `z` | zero the offset at the current reading (again to clear) |
+| `a [n]` | average n readings (default 200, ~2 s); shows amps and raw counts |
+| `z` | with **no** current flowing: average 200 readings and save that as zero |
+| `c <mA>` | with a known current flowing: average 500 readings and save the scale (negative mA if the current is reversed) |
+| `c` | show the saved offset and scale |
+| `u` | undo calibration (back to raw counts = mA) |
 | `i` | re-send the init sequence and print every reply |
 | `x 4F` | send any command. ≤7 bytes get the CRC appended, 8 bytes are sent verbatim |
 

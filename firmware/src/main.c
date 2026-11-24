@@ -1,35 +1,41 @@
 /* Tesla Model S 2012 current shunt -> serial terminal.
  *
  * Streams the pack current over the ST-LINK virtual COM port (115200 8N1).
- * Type a command and press Enter:
- *   h            help
- *   s            stream on/off
- *   p <ms>       sample period (10..10000 ms)
- *   r            raw mode on/off (also prints the 8 response bytes)
- *   z            zero: use the current reading as the offset (z again clears it)
- *   i            re-send the init sequence and print every response
- *   x <bytes..>  send one frame of hex bytes and print the response.
- *                Give up to 7 bytes and the CRC-8 is appended for you
- *                (e.g. "x 41" reads current); give 8 to send them verbatim.
+ * Type a command and press Enter (see help() below for the list).
+ *
+ * "raw" means the int32 the shunt sends in reply bytes 3..6. Reference code treats
+ * it as mA, but on this 2012 shunt 3 A read about 60, so it goes through the
+ * calibration in cal.c before being shown as amps.
  */
 #include <stddef.h>
 #include "board.h"
+#include "cal.h"
 #include "shunt.h"
 
 static int streaming = 1;
-static int raw = 0;
+static int raw_bytes = 0;
 static uint32_t period_ms = 200;
-static int32_t offset_ma = 0;
 
-static void print_amps(int32_t ma)
+/* ---------- printing ---------- */
+
+static void print_milli(int32_t m) /* 1234 -> "1.234" */
 {
-    if (ma < 0) { uart_putc('-'); ma = -ma; }
-    uart_int(ma / 1000);
+    if (m < 0) { uart_putc('-'); m = -m; }
+    uart_int(m / 1000);
     uart_putc('.');
-    int32_t frac = ma % 1000;
+    int32_t frac = m % 1000;
     uart_putc((char)('0' + frac / 100));
     uart_putc((char)('0' + frac / 10 % 10));
     uart_putc((char)('0' + frac % 10));
+}
+
+static void print_centi(int64_t c) /* 1234 -> "12.34" */
+{
+    if (c < 0) { uart_putc('-'); c = -c; }
+    uart_int((int32_t)(c / 100));
+    uart_putc('.');
+    uart_putc((char)('0' + (int)(c / 10 % 10)));
+    uart_putc((char)('0' + (int)(c % 10)));
 }
 
 static void print_bytes(const uint8_t *b, int n)
@@ -37,40 +43,73 @@ static void print_bytes(const uint8_t *b, int n)
     for (int i = 0; i < n; i++) { uart_putc(' '); uart_hex8(b[i]); }
 }
 
-static void sample(void)
-{
-    uint8_t rx[SHUNT_FRAME_LEN];
-    int32_t ma = shunt_read_ma(rx) - offset_ma;
+/* ---------- reading ---------- */
 
-    /* An undriven MISO reads all FF (our pull-up) or all 00; that's not a reading. */
+enum { READ_OK, READ_NO_REPLY, READ_ZEROS, READ_BAD };
+
+/* One current read, checked: CRC must pass and the reply must echo 41. Replies are
+ * one frame late, so the first read after any other command comes back READ_BAD. */
+static int read_raw(int32_t *out, uint8_t *rx)
+{
+    int32_t v = shunt_read_ma(rx);
     int ff = 1, zero = 1;
     for (int i = 0; i < SHUNT_FRAME_LEN; i++) {
         if (rx[i] != 0xFF) ff = 0;
         if (rx[i] != 0x00) zero = 0;
     }
-    if (ff || zero) {
-        uart_puts(ff ? "no reply (MISO idle high: shunt not connected/powered?)\r\n"
-                     : "no reply (all zeros)\r\n");
-        return;
+    if (ff) return READ_NO_REPLY;
+    if (zero) return READ_ZEROS;
+    if (shunt_crc8(rx, 7) != rx[7] || rx[0] != 0x41) return READ_BAD;
+    *out = v;
+    return READ_OK;
+}
+
+/* Average n good reads, 10 ms apart. Result in hundredths of a count. */
+static int average_c(int n, int64_t *avg_c, int32_t *min, int32_t *max)
+{
+    uint8_t rx[SHUNT_FRAME_LEN];
+    int64_t sum = 0;
+    int got = 0, tries = 0;
+    *min = 0x7FFFFFFF;
+    *max = -0x7FFFFFFF;
+    while (got < n) {
+        if (++tries > n * 2 + 10) return -1;
+        int32_t v;
+        if (read_raw(&v, rx) == READ_OK) {
+            sum += v;
+            got++;
+            if (v < *min) *min = v;
+            if (v > *max) *max = v;
+        }
+        delay_ms(10);
     }
-    /* The reply answers the previous frame, so it must echo 0x41 and pass its CRC.
-     * The first read after init (or after an x command) fails this and is skipped. */
-    if (shunt_crc8(rx, 7) != rx[7] || rx[0] != 0x41) {
-        if (raw) { uart_puts("skip (not a 41 reply):"); print_bytes(rx, SHUNT_FRAME_LEN); uart_puts("\r\n"); }
+    *avg_c = sum * 100 / n;
+    return 0;
+}
+
+static void sample(void)
+{
+    uint8_t rx[SHUNT_FRAME_LEN];
+    int32_t v;
+
+    switch (read_raw(&v, rx)) {
+    case READ_NO_REPLY: uart_puts("no reply (MISO idle high: shunt not connected/powered?)\r\n"); return;
+    case READ_ZEROS:    uart_puts("no reply (all zeros)\r\n"); return;
+    case READ_BAD:
+        if (raw_bytes) { uart_puts("skip (not a 41 reply):"); print_bytes(rx, SHUNT_FRAME_LEN); uart_puts("\r\n"); }
         return;
     }
 
     uart_puts("I = ");
-    print_amps(ma);
-    uart_puts(" A  (");
-    uart_int(ma);
-    uart_puts(" mA)");
-    if (raw) {
-        uart_puts("  rx:");
-        print_bytes(rx, SHUNT_FRAME_LEN);
-    }
+    print_milli(cal_apply((int64_t)v * 100));
+    uart_puts(" A  (raw ");
+    uart_int(v);
+    uart_puts(")");
+    if (raw_bytes) { uart_puts("  rx:"); print_bytes(rx, SHUNT_FRAME_LEN); }
     uart_puts("\r\n");
 }
+
+/* ---------- commands ---------- */
 
 static void help(void)
 {
@@ -78,10 +117,102 @@ static void help(void)
               "  h          help\r\n"
               "  s          stream on/off\r\n"
               "  p <ms>     sample period\r\n"
+              "  a [n]      average n readings (default 200, ~2 s)\r\n"
+              "  z          zero: average with NO current flowing, save as offset\r\n"
+              "  c <mA>     calibrate: with a known current flowing, give its true\r\n"
+              "             value in mA (negative if reversed). Do z first.\r\n"
+              "  c          show calibration\r\n"
+              "  u          undo calibration and offset (back to raw counts)\r\n"
               "  r          raw bytes on/off\r\n"
-              "  z          zero offset (again to clear)\r\n"
               "  i          re-run init, print responses\r\n"
               "  x <hex..>  send a frame; <=7 bytes gets CRC-8 appended\r\n\r\n");
+}
+
+static void show_cal(void)
+{
+    uart_puts("offset = ");
+    print_centi(cal.offset_c);
+    uart_puts(" counts, scale = ");
+    uart_int(cal.num);
+    uart_puts(" mA per ");
+    print_centi(cal.den);
+    uart_puts(" counts\r\n");
+}
+
+static void save(void)
+{
+    uart_puts(cal_save() ? "FLASH WRITE FAILED\r\n" : "saved to flash\r\n");
+}
+
+static int parse_int(const char *s, int32_t *out)
+{
+    while (*s == ' ') s++;
+    int neg = (*s == '-');
+    if (neg || *s == '+') s++;
+    if (*s < '0' || *s > '9') return -1;
+    int32_t v = 0;
+    while (*s >= '0' && *s <= '9') v = v * 10 + (*s++ - '0');
+    *out = neg ? -v : v;
+    return 0;
+}
+
+static void cmd_average(const char *arg)
+{
+    int32_t n = 200, mn, mx;
+    int64_t avg_c;
+    parse_int(arg, &n);
+    if (n < 1 || n > 5000) { uart_puts("a <1..5000>\r\n"); return; }
+    uart_puts("averaging...\r\n");
+    if (average_c(n, &avg_c, &mn, &mx)) { uart_puts("too many bad replies\r\n"); return; }
+    uart_puts("avg I = ");
+    print_milli(cal_apply(avg_c));
+    uart_puts(" A  (raw ");
+    print_centi(avg_c);
+    uart_puts(", min ");
+    uart_int(mn);
+    uart_puts(", max ");
+    uart_int(mx);
+    uart_puts(", n=");
+    uart_int(n);
+    uart_puts(")\r\n");
+}
+
+static void cmd_zero(void)
+{
+    int32_t mn, mx;
+    int64_t avg_c;
+    uart_puts("zeroing (no current!)...\r\n");
+    if (average_c(200, &avg_c, &mn, &mx)) { uart_puts("too many bad replies\r\n"); return; }
+    cal.offset_c = (int32_t)avg_c;
+    show_cal();
+    save();
+}
+
+static void cmd_cal(const char *arg)
+{
+    int32_t true_ma, mn, mx;
+    int64_t avg_c;
+
+    if (parse_int(arg, &true_ma)) { show_cal(); return; }
+    if (true_ma == 0) { uart_puts("use z for zero, c <mA> for a non-zero current\r\n"); return; }
+
+    uart_puts("calibrating, hold the current steady...\r\n");
+    if (average_c(500, &avg_c, &mn, &mx)) { uart_puts("too many bad replies\r\n"); return; }
+    int64_t span_c = avg_c - cal.offset_c;
+    uart_puts("raw above zero = ");
+    print_centi(span_c);
+    uart_puts(" counts\r\n");
+    if (span_c > -500 && span_c < 500) {
+        uart_puts("under 5 counts: too small to calibrate, use more current\r\n");
+        return;
+    }
+    cal.num = true_ma;
+    cal.den = (int32_t)span_c;
+    show_cal();
+    uart_puts("1 count = ");
+    print_milli((int32_t)((int64_t)true_ma * 100 * 1000 / span_c));
+    uart_puts(" mA\r\n");
+    save();
 }
 
 static int hexval(char c)
@@ -139,23 +270,18 @@ static void run_command(char *line)
     case 0: break;
     case 'h': case '?': help(); break;
     case 's': streaming = !streaming; uart_puts(streaming ? "stream on\r\n" : "stream off\r\n"); break;
-    case 'r': raw = !raw; uart_puts(raw ? "raw on\r\n" : "raw off\r\n"); break;
+    case 'r': raw_bytes = !raw_bytes; uart_puts(raw_bytes ? "raw on\r\n" : "raw off\r\n"); break;
     case 'i': shunt_init(1); break;
     case 'x': cmd_frame(arg); break;
-    case 'z':
-        if (offset_ma) { offset_ma = 0; uart_puts("offset cleared\r\n"); }
-        else {
-            offset_ma = shunt_read_ma(NULL);
-            uart_puts("offset = "); uart_int(offset_ma); uart_puts(" mA\r\n");
-        }
-        break;
+    case 'a': cmd_average(arg); break;
+    case 'z': cmd_zero(); break;
+    case 'c': cmd_cal(arg); break;
+    case 'u': cal_defaults(); show_cal(); save(); break;
     case 'p': {
-        uint32_t v = 0;
-        while (*arg == ' ') arg++;
-        while (*arg >= '0' && *arg <= '9') v = v * 10 + (uint32_t)(*arg++ - '0');
-        if (v < 10 || v > 10000) { uart_puts("p <10..10000>\r\n"); break; }
-        period_ms = v;
-        uart_puts("period = "); uart_int((int32_t)v); uart_puts(" ms\r\n");
+        int32_t v;
+        if (parse_int(arg, &v) || v < 10 || v > 10000) { uart_puts("p <10..10000>\r\n"); break; }
+        period_ms = (uint32_t)v;
+        uart_puts("period = "); uart_int(v); uart_puts(" ms\r\n");
         break;
     }
     default: uart_puts("? (h for help)\r\n"); break;
@@ -168,10 +294,12 @@ int main(void)
     unsigned len = 0;
 
     board_init();
+    cal_load();
     delay_ms(200); /* let the shunt's STM8 boot if both power up together */
 
     uart_puts("\r\n=== Tesla Model S shunt reader (STM32F031K6) ===\r\n");
     shunt_init(1);
+    show_cal();
     help();
 
     uint32_t next = millis();

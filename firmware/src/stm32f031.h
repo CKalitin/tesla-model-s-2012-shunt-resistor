@@ -53,6 +53,21 @@ typedef struct {
  * must be written and read with byte-wide accesses. */
 #define SPI1_DR8 (*(volatile uint8_t *)&SPI1->DR)
 
+/* ---- Flash interface ---- */
+#define FLASH_BASE_R  0x40022000u
+#define FLASH_KEYR    REG32(FLASH_BASE_R + 0x04)
+#define FLASH_SR      REG32(FLASH_BASE_R + 0x0C)
+#define FLASH_CR      REG32(FLASH_BASE_R + 0x10)
+#define FLASH_AR      REG32(FLASH_BASE_R + 0x14)
+#define FLASH_SR_BSY      (1u << 0)
+#define FLASH_SR_PGERR    (1u << 2)
+#define FLASH_SR_WRPRTERR (1u << 4)
+#define FLASH_SR_EOP      (1u << 5)
+#define FLASH_CR_PG   (1u << 0)
+#define FLASH_CR_PER  (1u << 1)
+#define FLASH_CR_STRT (1u << 6)
+#define FLASH_CR_LOCK (1u << 7)
+
 /* ---- SysTick ---- */
 #define SYST_CSR REG32(0xE000E010u)
 #define SYST_RVR REG32(0xE000E014u)

@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 815" width="1180" height="815" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="1180" height="815" fill="#ffffff"/>
+<text x="30" y="40" font-size="22" font-weight="bold" fill="#111">NUCLEO-F031K6 → Tesla Model S shunt (J1)</text>
+<rect x="420" y="70" width="220" height="645" rx="10" fill="#f4f6f8" stroke="#555" stroke-width="2"/>
+<rect x="492.0" y="48" width="76" height="40" rx="4" fill="#c8ccd0" stroke="#555" stroke-width="2"/>
+<text x="530.0" y="74" font-size="12" text-anchor="middle" fill="#333">USB</text>
+<text x="530.0" y="703" font-size="11" text-anchor="middle" fill="#888">NUCLEO-F031K6 (top view)</text>
+<text x="442" y="108" font-size="12" fill="#666">CN3</text>
+<text x="618" y="108" font-size="12" text-anchor="end" fill="#666">CN4</text>
+<circle cx="442" cy="150" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="154" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D1</text>
+<text x="502" y="154" font-size="11" text-anchor="start" fill="#666">PA9</text>
+<circle cx="442" cy="187" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="191" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D0</text>
+<text x="502" y="191" font-size="11" text-anchor="start" fill="#666">PA10</text>
+<circle cx="442" cy="224" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="228" font-size="13" font-weight="normal" text-anchor="start" fill="#111">NRST</text>
+<circle cx="442" cy="261" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="265" font-size="13" font-weight="normal" text-anchor="start" fill="#111">GND</text>
+<circle cx="442" cy="298" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="302" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D2</text>
+<text x="502" y="302" font-size="11" text-anchor="start" fill="#666">PA12</text>
+<circle cx="442" cy="335" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="339" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D3</text>
+<text x="502" y="339" font-size="11" text-anchor="start" fill="#666">PB0</text>
+<circle cx="442" cy="372" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="376" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D4</text>
+<text x="502" y="376" font-size="11" text-anchor="start" fill="#666">PB7</text>
+<circle cx="442" cy="409" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="413" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D5</text>
+<text x="502" y="413" font-size="11" text-anchor="start" fill="#666">PB6</text>
+<circle cx="442" cy="446" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="450" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D6</text>
+<text x="502" y="450" font-size="11" text-anchor="start" fill="#666">PB1</text>
+<circle cx="442" cy="483" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="487" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D7</text>
+<text x="502" y="487" font-size="11" text-anchor="start" fill="#666">PF0</text>
+<circle cx="442" cy="520" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="524" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D8</text>
+<text x="502" y="524" font-size="11" text-anchor="start" fill="#666">PF1</text>
+<circle cx="442" cy="557" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="458" y="561" font-size="13" font-weight="normal" text-anchor="start" fill="#111">D9</text>
+<text x="502" y="561" font-size="11" text-anchor="start" fill="#666">PA8</text>
+<circle cx="442" cy="594" r="8" fill="#ff7f0e" stroke="#ff7f0e" stroke-width="2.5"/>
+<text x="458" y="598" font-size="13" font-weight="bold" text-anchor="start" fill="#111">D10</text>
+<text x="502" y="598" font-size="11" text-anchor="start" fill="#666">PA11</text>
+<line x1="412" y1="594" x2="434" y2="594" stroke="#ff7f0e" stroke-width="3"/>
+<rect x="260" y="580" width="152" height="28" rx="14" fill="#ff7f0e"/>
+<text x="336.0" y="599" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-3  NSS</text>
+<text x="250" y="598" font-size="12" text-anchor="end" fill="#444">SPI chip select (GPIO)</text>
+<circle cx="442" cy="631" r="8" fill="#1f77b4" stroke="#1f77b4" stroke-width="2.5"/>
+<text x="458" y="635" font-size="13" font-weight="bold" text-anchor="start" fill="#111">D11</text>
+<text x="502" y="635" font-size="11" text-anchor="start" fill="#666">PB5</text>
+<line x1="412" y1="631" x2="434" y2="631" stroke="#1f77b4" stroke-width="3"/>
+<rect x="260" y="617" width="152" height="28" rx="14" fill="#1f77b4"/>
+<text x="336.0" y="636" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-6  MOSI</text>
+<text x="250" y="635" font-size="12" text-anchor="end" fill="#444">SPI1_MOSI</text>
+<circle cx="442" cy="668" r="8" fill="#2ca02c" stroke="#2ca02c" stroke-width="2.5"/>
+<text x="458" y="672" font-size="13" font-weight="bold" text-anchor="start" fill="#111">D12</text>
+<text x="502" y="672" font-size="11" text-anchor="start" fill="#666">PB4</text>
+<line x1="412" y1="668" x2="434" y2="668" stroke="#2ca02c" stroke-width="3"/>
+<rect x="260" y="654" width="152" height="28" rx="14" fill="#2ca02c"/>
+<text x="336.0" y="673" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-5  MISO</text>
+<text x="250" y="672" font-size="12" text-anchor="end" fill="#444">SPI1_MISO</text>
+<circle cx="618" cy="150" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="154" font-size="13" font-weight="normal" text-anchor="end" fill="#111">VIN</text>
+<circle cx="618" cy="187" r="8" fill="#222222" stroke="#222222" stroke-width="2.5"/>
+<text x="602" y="191" font-size="13" font-weight="bold" text-anchor="end" fill="#111">GND</text>
+<line x1="626" y1="187" x2="648" y2="187" stroke="#222222" stroke-width="3"/>
+<rect x="648" y="173" width="152" height="28" rx="14" fill="#222222"/>
+<text x="724.0" y="192" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-2  GND</text>
+<text x="810" y="191" font-size="12" fill="#444">ground</text>
+<circle cx="618" cy="224" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="228" font-size="13" font-weight="normal" text-anchor="end" fill="#111">NRST</text>
+<circle cx="618" cy="261" r="8" fill="#d62728" stroke="#d62728" stroke-width="2.5"/>
+<text x="602" y="265" font-size="13" font-weight="bold" text-anchor="end" fill="#111">+5V</text>
+<line x1="626" y1="261" x2="648" y2="261" stroke="#d62728" stroke-width="3"/>
+<rect x="648" y="247" width="152" height="28" rx="14" fill="#d62728"/>
+<text x="724.0" y="266" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-1  VDD</text>
+<text x="810" y="265" font-size="12" fill="#444">+5 V to shunt</text>
+<circle cx="618" cy="298" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="302" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A7</text>
+<text x="558" y="302" font-size="11" text-anchor="end" fill="#666">PA2</text>
+<text x="650" y="302" font-size="11" font-style="italic" fill="#888">VCP TX (serial, in use)</text>
+<circle cx="618" cy="335" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="339" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A6</text>
+<text x="558" y="339" font-size="11" text-anchor="end" fill="#666">PA7</text>
+<circle cx="618" cy="372" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="376" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A5</text>
+<text x="558" y="376" font-size="11" text-anchor="end" fill="#666">PA6</text>
+<circle cx="618" cy="409" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="413" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A4</text>
+<text x="558" y="413" font-size="11" text-anchor="end" fill="#666">PA5</text>
+<circle cx="618" cy="446" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="450" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A3</text>
+<text x="558" y="450" font-size="11" text-anchor="end" fill="#666">PA4</text>
+<circle cx="618" cy="483" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="487" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A2</text>
+<text x="558" y="487" font-size="11" text-anchor="end" fill="#666">PA3</text>
+<circle cx="618" cy="520" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="524" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A1</text>
+<text x="558" y="524" font-size="11" text-anchor="end" fill="#666">PA1</text>
+<circle cx="618" cy="557" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="561" font-size="13" font-weight="normal" text-anchor="end" fill="#111">A0</text>
+<text x="558" y="561" font-size="11" text-anchor="end" fill="#666">PA0</text>
+<circle cx="618" cy="594" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="598" font-size="13" font-weight="normal" text-anchor="end" fill="#111">AREF</text>
+<circle cx="618" cy="631" r="8" fill="#d9dcdf" stroke="#7a7f85" stroke-width="2.5"/>
+<text x="602" y="635" font-size="13" font-weight="normal" text-anchor="end" fill="#111">+3V3</text>
+<circle cx="618" cy="668" r="8" fill="#c9a400" stroke="#c9a400" stroke-width="2.5"/>
+<text x="602" y="672" font-size="13" font-weight="bold" text-anchor="end" fill="#111">D13</text>
+<text x="558" y="672" font-size="11" text-anchor="end" fill="#666">PB3</text>
+<line x1="626" y1="668" x2="648" y2="668" stroke="#c9a400" stroke-width="3"/>
+<rect x="648" y="654" width="152" height="28" rx="14" fill="#c9a400"/>
+<text x="724.0" y="673" font-size="13" font-weight="bold" text-anchor="middle" fill="#fff">J1-4  SCK</text>
+<text x="810" y="672" font-size="12" fill="#444">SPI1_SCK · also LED LD3</text>
+<rect x="920" y="330" width="230" height="280" rx="8" fill="#fafafa" stroke="#555" stroke-width="2"/>
+<text x="932" y="356" font-size="15" font-weight="bold" fill="#111">Shunt connector J1</text>
+<rect x="932" y="371" width="22" height="22" rx="3" fill="#d62728"/>
+<text x="943" y="387" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">1</text>
+<text x="964" y="387" font-size="13" font-weight="bold" fill="#111">VDD</text>
+<text x="1050" y="387" font-size="12" fill="#555">→ +5V</text>
+<rect x="932" y="401" width="22" height="22" rx="3" fill="#222222"/>
+<text x="943" y="417" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">2</text>
+<text x="964" y="417" font-size="13" font-weight="bold" fill="#111">GND</text>
+<text x="1050" y="417" font-size="12" fill="#555">→ GND</text>
+<rect x="932" y="431" width="22" height="22" rx="3" fill="#ff7f0e"/>
+<text x="943" y="447" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">3</text>
+<text x="964" y="447" font-size="13" font-weight="bold" fill="#111">NSS</text>
+<text x="1050" y="447" font-size="12" fill="#555">→ D10</text>
+<rect x="932" y="461" width="22" height="22" rx="3" fill="#c9a400"/>
+<text x="943" y="477" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">4</text>
+<text x="964" y="477" font-size="13" font-weight="bold" fill="#111">SCK</text>
+<text x="1050" y="477" font-size="12" fill="#555">→ D13</text>
+<rect x="932" y="491" width="22" height="22" rx="3" fill="#2ca02c"/>
+<text x="943" y="507" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">5</text>
+<text x="964" y="507" font-size="13" font-weight="bold" fill="#111">MISO</text>
+<text x="1050" y="507" font-size="12" fill="#555">→ D12</text>
+<rect x="932" y="521" width="22" height="22" rx="3" fill="#1f77b4"/>
+<text x="943" y="537" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">6</text>
+<text x="964" y="537" font-size="13" font-weight="bold" fill="#111">MOSI</text>
+<text x="1050" y="537" font-size="12" fill="#555">→ D11</text>
+<rect x="932" y="551" width="22" height="22" rx="3" fill="#bbbbbb"/>
+<text x="943" y="567" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">7</text>
+<text x="964" y="567" font-size="13" font-weight="bold" fill="#111">OC_FLAG</text>
+<text x="1050" y="567" font-size="12" fill="#555">→ not connected</text>
+<rect x="932" y="581" width="22" height="22" rx="3" fill="#bbbbbb"/>
+<text x="943" y="597" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">8</text>
+<text x="964" y="597" font-size="13" font-weight="bold" fill="#111">PC4</text>
+<text x="1050" y="597" font-size="12" fill="#555">→ not connected</text>
+<text x="30" y="753" font-size="13" font-weight="normal" fill="#333">SPI mode 0 · 500 kHz · 3.3 V logic works (no level shifter needed)</text>
+<text x="30" y="775" font-size="13" font-weight="normal" fill="#333">Serial: ST-LINK virtual COM port, 115200 8N1 (USART1 on PA2 / PA15)</text>
+<text x="30" y="797" font-size="13" font-weight="bold" fill="#b00020">Bench use only: J1 GND is the HV bus bar. Never wire to a live pack without isolation.</text>
+</svg>
